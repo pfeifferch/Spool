@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NFC Produktleser</title>
+<link rel="stylesheet" href="https://template.pc-cdn.de/assets/fontawesome/css/all.css">
 
 <style>
 body {
@@ -35,6 +36,13 @@ button {
   box-shadow: 0 6px 14px rgba(33,150,243,.4);
 }
 
+.scaninfo {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #f7f7f7;
+}
+
 .card {
   margin-top: 20px;
   padding: 16px;
@@ -58,13 +66,70 @@ button {
   border-radius: 10px;
   margin-top: 8px;
 }
+
+.gh-icon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+}
+
+.links-container {
+  display: flex; /* Aktiviert Flexbox */
+  gap: 20px; /* Abstand zwischen den Spalten */
+}
+
+.lccolumn {
+  flex: 1; /* Lässt jede Spalte gleichmäßig wachsen */
+  /* Alternativ: flex-basis: 33.33%; */
+}
+
+.hr-container {
+  max-width: 50%;  
+  margin: 40px auto;
+}
+.hr-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1.5em;
+  opacity: .5;
+  &:before {
+    content: '';
+    // use the linear-gradient for the fading effect
+    // use a solid background color for a solid bar
+    background: linear-gradient(to right, transparent, #818078, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: black;
+
+    padding: 0 .5em;
+    line-height: 1.5em;
+    // this is really the only tricky part, you need to specify the background color of the container element...
+    color: #818078;
+    background-color: #fcfcfa;
+  }
+}
+
 </style>
 </head>
 
 <body>
 <div class="app">
-  <button id="scan">📡 NFC scannen</button>
+  <button id="scan">🧪 NFC scannen</button>
 
+  <div id="scaninfo" class="scaninfo">Bitte den Scanner mit dem Button oben aktivieren und einen Tag scannen</div>
+  
 <div id="card" class="card">
   <div class="label">Hersteller</div>
   <div class="value" id="brand"></div>
@@ -134,6 +199,7 @@ scanBtn.addEventListener("click", async () => {
           colorBox.style.background = "#ccc";
         }
 
+        scaninfo.style.display = "none";
         card.style.display = "block";
       } catch (e) {
         alert("Kein gültiges JSON auf dem NFC-Tag");
@@ -145,6 +211,14 @@ scanBtn.addEventListener("click", async () => {
 });
 </script>
 
+<hr class="hr-text hr-container" data-content="LINKS">
+  
+<div class="links-container">
+  <div class="lccolumn"><a href="https://github.com/pfeifferch/Spool">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="gh-icon"></a></div>
+  <div class="lccolumn"><script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="pfeifferch" data-color="#617992" data-emoji="" data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script></div>
+  <div class="lccolumn"><a href="https://www.2.pfeifferch.eu/imprint"><i class="fas fa-gavel gh-icon"></i></a></div>
+</div>
 
 </body>
-  </html>
+</html>
