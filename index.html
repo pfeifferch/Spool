@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFC Produktleser</title>
+
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(135deg, #eceff1, #fafafa);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.app {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 360px;
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.2);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: white;
+  box-shadow: 0 6px 14px rgba(33,150,243,.4);
+}
+
+.card {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #f7f7f7;
+  display: none;
+}
+
+.label {
+  font-size: 12px;
+  color: #777;
+}
+
+.value {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.colorBox {
+  height: 60px;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <button id="scan">📡 NFC scannen</button>
+
+<div id="card" class="card">
+  <div class="label">Hersteller</div>
+  <div class="value" id="brand"></div>
+
+  <div class="label">Material</div>
+  <div class="value" id="type"></div>
+
+  <div class="label">Protokoll</div>
+  <div class="value" id="protocol"></div>
+
+  <div class="label">Version</div>
+  <div class="value" id="version"></div>
+
+  <div class="label">Spool-ID</div>
+  <div class="value" id="smid"></div>
+
+  <div class="label">Temperaturbereich</div>
+  <div class="value" id="temp"></div>
+
+  <div class="label">Farbe</div>
+  <div class="colorBox" id="color"></div>
+</div>
+
+<script>
+const scanBtn = document.getElementById("scan");
+const card = document.getElementById("card");
+
+const brandEl = document.getElementById("brand");
+const typeEl = document.getElementById("type");
+const protocolEl = document.getElementById("protocol");
+const versionEl = document.getElementById("version");
+const smidEl = document.getElementById("smid");
+const tempEl = document.getElementById("temp");
+const colorBox = document.getElementById("color");
+
+function val(v) {
+  return (v !== undefined && v !== null && v !== "") ? v : "kein Eintrag gespeichert";
+}
+
+scanBtn.addEventListener("click", async () => {
+  try {
+    const ndef = new NDEFReader();
+    await ndef.scan();
+
+    ndef.onreading = event => {
+      const record = event.message.records[0];
+      const jsonString = new TextDecoder().decode(record.data);
+
+      try {
+        const data = JSON.parse(jsonString);
+
+        brandEl.textContent    = val(data.brand);
+        typeEl.textContent     = val(data.type);
+        protocolEl.textContent = val(data.protocol);
+        versionEl.textContent  = val(data.version);
+        smidEl.textContent     = val(data.sm_id);
+
+        if (data.min_temp && data.max_temp) {
+          tempEl.textContent = `${data.min_temp}°C – ${data.max_temp}°C`;
+        } else {
+          tempEl.textContent = "kein Eintrag gespeichert";
+        }
+
+        if (data.color_hex) {
+          colorBox.style.background = "#" + data.color_hex;
+        } else {
+          colorBox.style.background = "#ccc";
+        }
+
+        card.style.display = "block";
+      } catch (e) {
+        alert("Kein gültiges JSON auf dem NFC-Tag");
+      }
+    };
+  } catch (error) {
+    alert("NFC nicht verfügbar oder Zugriff verweigert.");
+  }
+});
+</script>
+
+
+</body>
+  </html>
