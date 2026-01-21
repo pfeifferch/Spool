@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NFC Produktleser</title>
+<title>NFC Spool Reader (OpenSpool and FilaMan Reader)</title>
 <link rel="stylesheet" href="https://fonts.pc-cdn.eu/FAS/v/lastest/css/all.css">
 <link rel="stylesheet" href="https://spool.pfeifferch.eu/style.css">
 <link rel="apple-touch-icon" sizes="180x180" href="https://spool.pfeifferch.eu/images/favicons/apple-touch-icon.png">
@@ -43,63 +43,7 @@
   <div class="colorBox" id="color"></div>
 </div>
 
-<script>
-const scanBtn = document.getElementById("scan");
-const card = document.getElementById("card");
-
-const brandEl = document.getElementById("brand");
-const typeEl = document.getElementById("type");
-const protocolEl = document.getElementById("protocol");
-const versionEl = document.getElementById("version");
-const smidEl = document.getElementById("smid");
-const tempEl = document.getElementById("temp");
-const colorBox = document.getElementById("color");
-
-function val(v) {
-  return (v !== undefined && v !== null && v !== "") ? v : "kein Eintrag gespeichert";
-}
-
-scanBtn.addEventListener("click", async () => {
-  try {
-    const ndef = new NDEFReader();
-    await ndef.scan();
-
-    ndef.onreading = event => {
-      const record = event.message.records[0];
-      const jsonString = new TextDecoder().decode(record.data);
-
-      try {
-        const data = JSON.parse(jsonString);
-
-        brandEl.textContent    = val(data.brand);
-        typeEl.textContent     = val(data.type);
-        protocolEl.textContent = val(data.protocol);
-        versionEl.textContent  = val(data.version);
-        smidEl.textContent     = val(data.sm_id);
-
-        if (data.min_temp && data.max_temp) {
-          tempEl.textContent = `${data.min_temp}°C – ${data.max_temp}°C`;
-        } else {
-          tempEl.textContent = "kein Eintrag gespeichert";
-        }
-
-        if (data.color_hex) {
-          colorBox.style.background = "#" + data.color_hex;
-        } else {
-          colorBox.style.background = "#ccc";
-        }
-
-        scaninfo.style.display = "none";
-        card.style.display = "block";
-      } catch (e) {
-        alert("Kein gültiges JSON auf dem NFC-Tag");
-      }
-    };
-  } catch (error) {
-    alert("NFC nicht verfügbar oder Zugriff verweigert.");
-  }
-});
-</script>
+<script src="./script.js"></script>
 
 <hr class="hr-text hr-container" data-content="LINKS">
   
