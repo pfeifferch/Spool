@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NFC Spool Reader (OpenSpool and FilaMan Reader)</title>
 <link rel="stylesheet" href="https://fonts.pc-cdn.eu/FAS/v/lastest/css/all.css">
-<link rel="stylesheet" href="https://spool.pfeifferch.eu/style.css">
+<link rel="stylesheet" href="./style.css">
 <link rel="apple-touch-icon" sizes="180x180" href="https://spool.pfeifferch.eu/images/favicons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://spool.pfeifferch.eu/images/favicons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="https://spool.pfeifferch.eu/images/favicons/favicon-16x16.png">
@@ -36,23 +36,65 @@
   <div class="label">Spool-ID</div>
   <div class="value" id="smid"></div>
 
+  <div class="label">Restgewicht</div>
+  <div class="value" id="weight"></div>
+
   <div class="label">Temperaturbereich</div>
   <div class="value" id="temp"></div>
 
   <div class="label">Farbe</div>
   <div class="colorBox" id="color"></div>
+
+  <hr class="hr-text hr-container" data-content="Experimentell:">
+
+
+  <div class="label">Durchmesser</div>
+  <div class="value" id="diameter"></div>
+
+  <div class="label">Düsentemperatur</div>
+  <div class="value" id="nozzle"></div>
+
+  <div class="label">Betttemperatur</div>
+  <div class="value" id="bed"></div>
+
+  <div class="label">Trocknungstemperatur</div>
+  <div class="value" id="drying"></div>
+
+  <div class="label">Hygroskopie</div>
+  <div class="value" id="hygro"></div>
+
+  <div class="label">Sicherheitsklasse</div>
+  <div class="value" id="safety"></div>
+
+  <div class="label">Charge</div>
+  <div class="value" id="lot"></div>
+
+  <div class="label">Herstellungsdatum</div>
+  <div class="value" id="mdate"></div>
 </div>
 
-<script src="./script.js"></script>
+<script type="text/javascript" src="./script.js"></script>
 
-<hr class="hr-text hr-container" data-content="LINKS">
+
+<hr class="hr-text hr-container" data-content="Info">
+
+<div class="links-container">
+  <div class="copyright">© 2025 by PfeifferCh</div>
+  <div id="versioninfo" class="versioninfo">Version</div>
+  <div class="imprint"><a href="https://www.2.pfeifferch.eu/imprint"><i class="fas fa-gavel gh-icon"></i></a></div>
+</div>
+
+
+<hr class="hr-text hr-container" data-content="Links">
   
 <div class="links-container">
   <div class="lccolumn"><a href="https://github.com/pfeifferch/Spool">
 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="gh-icon"></a></div>
-  <div class="lccolumn"><!-- <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="pfeifferch" data-color="#617992" data-emoji="" data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>--></div>
-  <div class="lccolumn"><a href="https://www.2.pfeifferch.eu/imprint"><i class="fas fa-gavel gh-icon"></i></a></div>
+  <!-- 
+  <div class="lccolumn"><script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="pfeifferch" data-color="#617992" data-emoji="" data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script></div>
+   -->
 </div>
+
 
 </body>
 </html>

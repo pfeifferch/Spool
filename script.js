@@ -1,3 +1,13 @@
+const version = "0.1.16beta5";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const el = document.getElementById("versioninfo");
+  if (el) {
+    el.textContent = "v" + version;
+  }
+});
+
+
 const scanBtn = document.getElementById("scan");
 const card = document.getElementById("card");
 
@@ -8,6 +18,16 @@ const versionEl = document.getElementById("version");
 const smidEl = document.getElementById("smid");
 const tempEl = document.getElementById("temp");
 const colorBox = document.getElementById("color");
+
+const diameterEl = document.getElementById("diameter");
+const weightEl   = document.getElementById("weight");
+const nozzleEl   = document.getElementById("nozzle");
+const bedEl      = document.getElementById("bed");
+const dryingEl   = document.getElementById("drying");
+const hygroEl    = document.getElementById("hygro");
+const safetyEl   = document.getElementById("safety");
+const lotEl      = document.getElementById("lot");
+const mdateEl    = document.getElementById("mdate");
 
 function val(v) {
   return (v !== undefined && v !== null && v !== "") ? v : "kein Eintrag gespeichert";
@@ -44,6 +64,17 @@ scanBtn.addEventListener("click", async () => {
       protocolEl.textContent = val(data.protocol);
       versionEl.textContent  = val(data.version);
       smidEl.textContent     = val(data.sm_id);
+      
+      
+      diameterEl.textContent = val(data.diameter ? data.diameter + " mm" : null);
+weightEl.textContent   = val(data.weight_remaining ? data.weight_remaining + " g" : null);
+nozzleEl.textContent   = val(data.nozzle_min && data.nozzle_max ? data.nozzle_min + "–" + data.nozzle_max + " °C" : null);
+bedEl.textContent      = val(data.bed_temp_min && data.bed_temp_max ? data.bed_temp_min + "–" + data.bed_temp_max + " °C" : null);
+dryingEl.textContent   = val(data.drying_temp ? data.drying_temp + " °C" : null);
+hygroEl.textContent    = val(data.hygroscopic_level);
+safetyEl.textContent   = val(data.safety_class);
+lotEl.textContent      = val(data.lot_number);
+mdateEl.textContent    = val(data.manufacture_date);
 
       if (data.min_temp && data.max_temp) {
         tempEl.textContent = `${data.min_temp}°C – ${data.max_temp}°C`;
@@ -68,7 +99,7 @@ scanBtn.addEventListener("click", async () => {
         document.getElementById("serial").innerHTML =
           `<span class="label">Chip-Seriennummer</span><br>${serial}`;
       }
-
+      
       scaninfo.style.display = "none";
       card.style.display = "block";
     };
@@ -77,3 +108,5 @@ scanBtn.addEventListener("click", async () => {
     alert("NFC nicht verfügbar oder Zugriff nicht erlaubt.");
   }
 });
+
+
