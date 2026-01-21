@@ -11,10 +11,14 @@
 <link rel="icon" type="image/png" sizes="16x16" href="https://spool.pfeifferch.eu/images/favicons/favicon-16x16.png">
 <link rel="manifest" href="https://spool.pfeifferch.eu/images/favicons/site.webmanifest">
 
-
 </head>
 
 <body>
+
+<script>
+  const BETA = true;
+</script>
+
 <div class="app">
   <button id="scan"><i class="fa-brands fa-nfc-symbol"></i><!-- <i class="fa-brands fa-nfc-directional"></i>--> NFC scannen <i class="fa-brands fa-nfc-symbol"></i><!-- <i class="fa-brands fa-nfc-directional"></i>--></button>
 
@@ -81,6 +85,7 @@
 <div class="links-container">
   <div class="copyright">© 2025 by PfeifferCh</div>
   <div id="versioninfo" class="versioninfo">Version</div>
+<div id="timestamp"></div>
   <div class="imprint"><a href="https://www.2.pfeifferch.eu/imprint"><i class="fas fa-gavel gh-icon"></i></a></div>
 </div>
 
@@ -95,6 +100,15 @@
    -->
 </div>
 
+<script>
+if (BETA) {
+document.getElementById("timestamp").innerHTML =
+    '<i class="fa-solid fa-vial-circle-check"></i>';  
+  const script = document.createElement("script");
+  script.src = "/script.js?v=" + Date.now();
+  document.head.appendChild(script);
+}
+</script>
 
 </body>
 </html>

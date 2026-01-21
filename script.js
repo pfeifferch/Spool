@@ -1,9 +1,9 @@
-const version = "0.1.16beta5";
+const scriptversion = "0.1.16b8";
 
 document.addEventListener("DOMContentLoaded", () => {
   const el = document.getElementById("versioninfo");
   if (el) {
-    el.textContent = "v" + version;
+    el.textContent = "v" + scriptversion;
   }
 });
 
