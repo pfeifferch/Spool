@@ -69,6 +69,7 @@ scanBtn.addEventListener("click", async () => {
           `<span class="label">Chip-Seriennummer</span><br>${serial}`;
       }
 
+      scaninfo.style.display = "none";
       card.style.display = "block";
     };
 
