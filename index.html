@@ -40,6 +40,9 @@
   <div class="label">Spool-ID</div>
   <div class="value" id="smid"></div>
 
+  <div class="label">Spoolman-Link</div>
+  <div class="value" id="spoolmanLink"></div>
+
   <div class="label">Restgewicht</div>
   <div class="value" id="weight"></div>
 
@@ -79,6 +82,14 @@
 
 <script type="text/javascript" src="./script.js"></script>
 
+<hr class="hr-text hr-container" data-content="Konfiguration">
+
+  <div class="settings">
+    <p style="font-size:xx-small">Spoolman Basis-URL</p>
+    <input type="url" id="spoolmanInput" placeholder="Spoolman Basis-URL eingeben">
+    <button id="saveUrl">Speichern</button>
+  </div>
+    <div id="smurlinfo" style="font-size:xx-small">Wenn du die  Basis-URL konfiguriert, wird die Info in einem Cookie gespeichert und oben als URL ausgegeben damit du schneller auf deine Spule in Spoolman zugreifen kannst ;)</div>
 
 <hr class="hr-text hr-container" data-content="Info">
 
