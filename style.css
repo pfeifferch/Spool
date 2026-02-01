@@ -1,42 +1,78 @@
-body {
-  font-family: system-ui, sans-serif;
-  background: linear-gradient(135deg, #eceff1, #fafafa);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* =========================
+   Base / Reset
+========================= */
+
+* {
+  box-sizing: border-box;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f3f5f7;
+  color: #222;
+}
+
+
+/* =========================
+   NFC Aktiv/Inaktiv 
+========================= */
+
+
+.nfc-status {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #555;
+}
+
+.nfc-status.active {
+  color: green;
+  font-weight: bold;
+}
+
+.nfc-status.error {
+  color: red;
+  font-weight: bold;
+}
+
+
+/* =========================
+   App Container
+========================= */
+/*
+.app {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+*/
 
 .app {
   background: white;
   border-radius: 24px;
   width: 100%;
-  max-width: 360px;
+  max-width: 420px;
   padding: 24px;
   box-shadow: 0 12px 30px rgba(0,0,0,.2);
 }
 
 
-.settings {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.settings input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
-
-.settings button {
-  padding: 10px 14px;
-  border-radius: 10px;
+/* =========================
+   Buttons
+========================= */
+/*
+button {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
   border: none;
-  background: #4caf50;
-  color: white;
+  background: #617992;
+  color: #fff;
+  cursor: pointer;
 }
-
+*/
 
 button {
   width: 100%;
@@ -48,54 +84,73 @@ button {
   color: white;
   box-shadow: 0 6px 14px rgba(33,150,243,.4);
 }
+button:hover {
+  background: #4e647a;
+}
+
+
+/* =========================
+   Scan Info
+========================= */
 
 .scaninfo {
-  margin-top: 20px;
-  padding: 16px;
-  border-radius: 16px;
-  background: #f7f7f7;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  background: #eef1f4;
+  border-radius: 6px;
+  text-align: center;
 }
+
+/* =========================
+   Card
+========================= */
 
 .card {
-  margin-top: 20px;
-  padding: 16px;
-  border-radius: 16px;
-  background: #f7f7f7;
-  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+/* =========================
+   Labels / Values
+========================= */
+
 .label {
-  font-size: 12px;
-  color: #777;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666;
+  margin-top: 0.8rem;
 }
 
 .value {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 0.95rem;
+  margin-top: 0.2rem;
+  word-break: break-word;
 }
+
+/* =========================
+   Color Box
+========================= */
 
 .colorBox {
-  height: 60px;
-  border-radius: 10px;
-  margin-top: 8px;
+  width: 100%;
+  height: 32px;
+  margin-top: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #ccc;
 }
 
-.gh-icon {
-    width: 24px;
-    height: 24px;
-    transition: transform 0.3s ease;
-}
+/* =========================
+   HR with Text
+========================= */
 
-.links-container {
-  display: flex; /* Aktiviert Flexbox */
-  gap: 20px; /* Abstand zwischen den Spalten */
-}
 
-.lccolumn {
-  flex: 1; /* Lässt jede Spalte gleichmäßig wachsen */
-  /* Alternativ: flex-basis: 33.33%; */
-  text-align: center;
-}
+
 
 .hr-container {
   max-width: 50%;  
@@ -133,4 +188,153 @@ button {
     color: #818078;
     background-color: #fcfcfa;
   }
+}
+
+
+/*
+
+
+.hr-text {
+  text-align: center;
+  position: relative;
+}
+
+.hr-text::before {
+  content: attr(data-content);
+  background: #ddd;
+  padding: 0 10px;
+  transform: translate(-50%, -50%);
+  background: #f3f5f7;
+
+}
+
+
+
+
+.hr-container {
+  margin: 2.2rem 0;
+}
+
+.hr-text {
+  position: relative;
+  border: none;
+  height: 1px;
+  background: #ddd;
+}
+
+.hr-text::before {
+  content: attr(data-content);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #f3f5f7;
+  padding: 0 1.5rem;
+  font-size: 0.7rem;
+  color: #777;
+  text-transform: uppercase;
+}
+*/
+/* =========================
+   Settings
+========================= */
+/*
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+*/
+.settings input[type="url"] {
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+
+.settings {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.settings input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.settings button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #4caf50;
+  color: white;
+}
+
+/* =========================
+   Toggle (Experimentell)
+========================= */
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.toggle input {
+  accent-color: #617992;
+  cursor: pointer;
+}
+
+/* =========================
+   Experimental Block
+========================= */
+
+#experimentalBlock {
+  display: none;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #ddd;
+}
+
+/* =========================
+   Footer / Links
+========================= */
+
+.links-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.links-container a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.links-container a:hover {
+  text-decoration: underline;
+}
+
+.lccolumn {
+  flex: 1; /* Lässt jede Spalte gleichmäßig wachsen */
+  /* Alternativ: flex-basis: 33.33%; */
+  text-align: center;
+}
+.small {
+  font-size: xx-small;
+}
+
+.gh-icon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
 }

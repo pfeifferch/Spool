@@ -1,95 +1,120 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NFC Spool Reader (OpenSpool and FilaMan Reader)</title>
-<link rel="stylesheet" href="https://fonts.pc-cdn.eu/FAS/v/lastest/css/all.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFC Spool Reader</title>
+
 <link rel="stylesheet" href="./style.css">
 <link rel="apple-touch-icon" sizes="180x180" href="https://spool.pfeifferch.eu/images/favicons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://spool.pfeifferch.eu/images/favicons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="https://spool.pfeifferch.eu/images/favicons/favicon-16x16.png">
 <link rel="manifest" href="https://spool.pfeifferch.eu/images/favicons/site.webmanifest">
 
+  <link rel="stylesheet" href="https://fonts.pc-cdn.de/FAS/v/lastest/css/all.css">
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
 
-<script>
-  const BETA = true;
-</script>
+<script>const BETA = true;</script>
+<script src="./script.js" ></script>
+
 
 <div class="app">
-  <button id="scan"><i class="fa-brands fa-nfc-symbol"></i><!-- <i class="fa-brands fa-nfc-directional"></i>--> NFC scannen <i class="fa-brands fa-nfc-symbol"></i><!-- <i class="fa-brands fa-nfc-directional"></i>--></button>
 
-  <div id="scaninfo" class="scaninfo">Bitte den Scanner mit dem Button oben aktivieren und einen Tag scannen</div>
-  
-<div id="card" class="card">
-  <div class="label">Hersteller</div>
-  <div class="value" id="brand"></div>
+  <button id="scan">
+    <i class="fa-brands fa-nfc-symbol"></i>
+    NFC scannen
+    <i class="fa-brands fa-nfc-symbol"></i>
+  </button>
 
-  <div class="label">Material</div>
-  <div class="value" id="type"></div>
+  <div id="scaninfo" class="scaninfo">
+    Bitte mit dem Button oben Scanner aktivieren und dann den/die NFC-Tag(s) scannen
+  </div>
 
-  <div class="label">Protokoll</div>
-  <div class="value" id="protocol"></div>
+  <div id="card" class="card" style="display:none">
 
-  <div class="label">Version</div>
-  <div class="value" id="version"></div>
+    <div class="label">Hersteller</div>
+    <div class="value" id="brand"></div>
 
-  <div class="label">Spool-ID</div>
-  <div class="value" id="smid"></div>
+    <div class="label">Material</div>
+    <div class="value" id="type"></div>
 
-  <div class="label">Spoolman-Link</div>
-  <div class="value" id="spoolmanLink"></div>
+    <div class="label">Protokoll</div>
+    <div class="value" id="protocol"></div>
 
-  <div class="label">Restgewicht</div>
-  <div class="value" id="weight"></div>
+    <div class="label">Version</div>
+    <div class="value" id="version"></div>
 
-  <div class="label">Temperaturbereich</div>
-  <div class="value" id="temp"></div>
+    <div class="label">Spool-ID</div>
+    <div class="value" id="smid"></div>
 
-  <div class="label">Farbe</div>
-  <div class="colorBox" id="color"></div>
+    <div class="label">Spoolman-Link</div>
+    <div class="value" id="spoolmanLink"></div>
 
-  <hr class="hr-text hr-container" data-content="Experimentell:">
+    <div class="label">Temperaturbereich</div>
+    <div class="value" id="temp"></div>
 
+    <div class="label">Farbe</div>
+    <div class="colorBox" id="color"></div>
 
-  <div class="label">Durchmesser</div>
-  <div class="value" id="diameter"></div>
+    <hr class="hr-text hr-container" data-content="Experimentell">
 
-  <div class="label">Düsentemperatur</div>
-  <div class="value" id="nozzle"></div>
+    <!-- Toggle -->
+    <div class="settings">
+      <label class="toggle">
+        <input type="checkbox" id="toggleExperimental">
+        <span>Experimentelle Daten anzeigen</span>
+      </label>
+    </div>
 
-  <div class="label">Betttemperatur</div>
-  <div class="value" id="bed"></div>
+    <!-- Experimenteller Block -->
+    <div id="experimentalBlock">
 
-  <div class="label">Trocknungstemperatur</div>
-  <div class="value" id="drying"></div>
+      <div class="label">Restgewicht (Spoolman)</div>
+      <div class="value" id="spoolmanWeight">—</div>
 
-  <div class="label">Hygroskopie</div>
-  <div class="value" id="hygro"></div>
+      <div class="label">Durchmesser</div>
+      <div class="value" id="diameter"></div>
 
-  <div class="label">Sicherheitsklasse</div>
-  <div class="value" id="safety"></div>
+      <div class="label">Düsentemperatur</div>
+      <div class="value" id="nozzle"></div>
 
-  <div class="label">Charge</div>
-  <div class="value" id="lot"></div>
+      <div class="label">Betttemperatur</div>
+      <div class="value" id="bed"></div>
 
-  <div class="label">Herstellungsdatum</div>
-  <div class="value" id="mdate"></div>
-</div>
+      <div class="label">Trocknung</div>
+      <div class="value" id="drying"></div>
 
-<script type="text/javascript" src="./script.js"></script>
+      <div class="label">Hygroskopie</div>
+      <div class="value" id="hygro"></div>
 
-<hr class="hr-text hr-container" data-content="Konfiguration">
+      <div class="label">Sicherheitsklasse</div>
+      <div class="value" id="safety"></div>
+
+      <div class="label">Charge</div>
+      <div class="value" id="lot"></div>
+
+      <div class="label">Herstellungsdatum</div>
+      <div class="value" id="mdate"></div>
+
+    </div>
+  </div>
+
+  <hr class="hr-text hr-container" data-content="Konfiguration">
 
   <div class="settings">
     <p style="font-size:xx-small">Spoolman Basis-URL</p>
-    <input type="url" id="spoolmanInput" placeholder="Spoolman Basis-URL eingeben">
+    <input type="url" id="spoolmanInput" placeholder="Spoolman Basis-URL">
     <button id="saveUrl">Speichern</button>
   </div>
-    <div id="smurlinfo" style="font-size:xx-small">Wenn du die  Basis-URL konfiguriert, wird die Info in einem Cookie gespeichert und oben als URL ausgegeben damit du schneller auf deine Spule in Spoolman zugreifen kannst ;)</div>
+  
+
+    <div id="smurlinfo" style="font-size:xx-small">Wenn du die  Basis-URL konfiguriert, wird die Info in einem Cookie gespeichert und oben als Link ausgegeben damit du schneller auf deine Spule in Spoolman zugreifen kannst ;) <br/>
+Außerdem kannst du die Experimentellen Features aktivieren und siehst dann das Gewicht von Spoolman sofern es gespeichert ist. Hierzu wird die Webseite jedoch "nach Geräten in deinem Netzwerk suchen und eine Verbindung zu ihnen aufnehmen".<br />
+Aus Datenschutzgründen ist das Spoolman-Gewicht deshalb (auch in späteren Versionen) in den Experimentellen Features.
+</div>
 
 <hr class="hr-text hr-container" data-content="Info">
 
@@ -112,14 +137,15 @@
 </div>
 
 <script>
+
 if (BETA) {
-document.getElementById("timestamp").innerHTML =
-    '<i class="fa-solid fa-vial-circle-check"></i>';  
-  const script = document.createElement("script");
-  script.src = "/script.js?v=" + Date.now();
-  document.head.appendChild(script);
+document.getElementById("timestamp").innerHTML = '<i class="fa-solid fa-vial-circle-check"></i>';  
+} else {
+document.getElementById("timestamp").innerHTML = '<i class="fa-solid fa-square-check"></i>'; 
 }
 </script>
+
+</div>
 
 </body>
 </html>

@@ -1,146 +1,199 @@
-const scriptversion = "0.2.b14";
+const scriptversion = "0.3.17";
+const EXPERIMENTAL_KEY = "experimentalEnabled";
+
+/* =========================
+   Helper
+========================= */
+
+function setCookie(name, value, days) {
+  const d = new Date();
+  d.setTime(d.getTime() + days * 864e5);
+  document.cookie =
+    name + "=" + encodeURIComponent(value) +
+    ";expires=" + d.toUTCString() + ";path=/";
+}
+
+function getCookie(name) {
+  const entry = document.cookie
+    .split("; ")
+    .find(c => c.startsWith(name + "="));
+  return entry
+    ? decodeURIComponent(entry.split("=").slice(1).join("="))
+    : null;
+}
+
+function val(v) {
+  return (v !== undefined && v !== null && v !== "")
+    ? v
+    : "kein Eintrag gespeichert";
+}
+
+function experimentalEnabled() {
+  return localStorage.getItem(EXPERIMENTAL_KEY) === "true";
+}
+
+/* =========================
+   Init
+========================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Versionsanzeige
+  /* Version */
   const el = document.getElementById("versioninfo");
   if (el) el.textContent = "v" + scriptversion;
 
-  // DOM-Elemente
+  /* Elements */
+  const scanBtn   = document.getElementById("scan");
+  const scaninfo  = document.getElementById("scaninfo");
+  const card      = document.getElementById("card");
+
+  const toggle    = document.getElementById("toggleExperimental");
+  const expBlock  = document.getElementById("experimentalBlock");
+
+  const spoolmanWeightEl = document.getElementById("spoolmanWeight");
+
   const input   = document.getElementById("spoolmanInput");
   const saveBtn = document.getElementById("saveUrl");
-  const scanBtn = document.getElementById("scan");
-  const card    = document.getElementById("card");
-  const scaninfo = document.getElementById("scaninfo");
 
-  const brandEl    = document.getElementById("brand");
-  const typeEl     = document.getElementById("type");
-  const protocolEl = document.getElementById("protocol");
-  const versionEl  = document.getElementById("version");
-  const smidEl     = document.getElementById("smid");
-  const tempEl     = document.getElementById("temp");
-  const colorBox   = document.getElementById("color");
-
-  const diameterEl = document.getElementById("diameter");
-  const weightEl   = document.getElementById("weight");
-  const nozzleEl   = document.getElementById("nozzle");
-  const bedEl      = document.getElementById("bed");
-  const dryingEl   = document.getElementById("drying");
-  const hygroEl    = document.getElementById("hygro");
-  const safetyEl   = document.getElementById("safety");
-  const lotEl      = document.getElementById("lot");
-  const mdateEl    = document.getElementById("mdate");
-  const linkEl     = document.getElementById("spoolmanLink");
-
-  // Cookie beim Laden ins Feld
+  /* Load saved URL */
   const savedUrl = getCookie("SpoolmanURL");
   if (savedUrl && input) input.value = savedUrl;
 
-  // URL speichern
+  /* Toggle init */
+  if (toggle && expBlock) {
+    const enabled = experimentalEnabled();
+    toggle.checked = enabled;
+    expBlock.style.display = enabled ? "block" : "none";
+
+    toggle.addEventListener("change", () => {
+      const state = toggle.checked;
+      localStorage.setItem(EXPERIMENTAL_KEY, state);
+      expBlock.style.display = state ? "block" : "none";
+
+      if (state) {
+        const smid = document.getElementById("smid")?.textContent;
+        if (smid && smid !== "kein Eintrag gespeichert") {
+          loadSpoolmanWeight(smid, spoolmanWeightEl);
+        }
+      }
+    });
+  }
+
+  /* Save URL */
   if (saveBtn) {
     saveBtn.onclick = () => {
-      if (!input.value) return alert("Bitte eine Spoolman-URL eingeben");
+      if (!input.value.trim()) {
+        alert("Bitte eine Spoolman-Basis-URL eingeben");
+        return;
+      }
       setCookie("SpoolmanURL", input.value.trim(), 365);
       alert("SpoolmanURL gespeichert");
     };
   }
 
-  // NFC Scan
-  if (scanBtn) {
-    scanBtn.addEventListener("click", async () => {
-      try {
-        const ndef = new NDEFReader();
-        await ndef.scan();
+  /* NFC Scan */
 
-        ndef.onreading = event => {
+  scanBtn.addEventListener("click", async () => {
+    try {
+      const ndef = new NDEFReader();
+      await ndef.scan();
 
-          const serial = event.serialNumber || "nicht verfügbar";
+      ndef.onreading = event => {
 
-          if (!event.message || !event.message.records.length) {
-            alert("Kein NDEF-Datensatz auf dem NFC-Tag.");
-            return;
-          }
+        if (!event.message?.records?.length) {
+          alert("Kein NDEF-Datensatz auf dem NFC-Tag");
+          return;
+        }
 
-          const record = event.message.records[0];
-          const jsonString = new TextDecoder().decode(record.data);
+        const record = event.message.records[0];
+        let data;
 
-          let data;
-          try {
-            data = JSON.parse(jsonString);
-          } catch {
-            alert("Kein gültiges JSON auf dem NFC-Tag.");
-            return;
-          }
+        try {
+          data = JSON.parse(new TextDecoder().decode(record.data));
+        } catch {
+          alert("Kein gültiges JSON auf dem NFC-Tag");
+          return;
+        }
 
-          brandEl.textContent    = val(data.brand);
-          typeEl.textContent     = val(data.type);
-          protocolEl.textContent = val(data.protocol);
-          versionEl.textContent  = val(data.version);
-          smidEl.textContent     = val(data.sm_id);
+        /* Base fields */
+        setText("brand", data.brand);
+        setText("type", data.type);
+        setText("protocol", data.protocol);
+        setText("version", data.version);
+        setText("smid", data.sm_id);
 
-          diameterEl.textContent = val(data.diameter ? data.diameter + " mm" : null);
-          weightEl.textContent   = val(data.weight_remaining ? data.weight_remaining + " g" : null);
-          nozzleEl.textContent   = val(data.nozzle_min && data.nozzle_max ? `${data.nozzle_min}–${data.nozzle_max} °C` : null);
-          bedEl.textContent      = val(data.bed_temp_min && data.bed_temp_max ? `${data.bed_temp_min}–${data.bed_temp_max} °C` : null);
-          dryingEl.textContent   = val(data.drying_temp ? data.drying_temp + " °C" : null);
-          hygroEl.textContent    = val(data.hygroscopic_level);
-          safetyEl.textContent   = val(data.safety_class);
-          lotEl.textContent      = val(data.lot_number);
-          mdateEl.textContent    = val(data.manufacture_date);
+        setText("temp",
+          data.min_temp && data.max_temp
+            ? `${data.min_temp}–${data.max_temp} °C`
+            : null
+        );
 
-          tempEl.textContent = (data.min_temp && data.max_temp)
-            ? `${data.min_temp}°C – ${data.max_temp}°C`
-            : "kein Eintrag gespeichert";
+        const color = document.getElementById("color");
+        if (color) {
+          color.style.background =
+            data.color_hex ? "#" + data.color_hex : "#ccc";
+        }
 
-          colorBox.style.background = data.color_hex ? "#" + data.color_hex : "#ccc";
+        /* Spoolman Link */
+        const base = getCookie("SpoolmanURL");
+        const link = document.getElementById("spoolmanLink");
+        if (base && data.sm_id && link) {
+          link.innerHTML =
+            `<a href="${base.replace(/\/$/, "")}/spool/show/${data.sm_id}" target="_blank">öffnen</a>`;
+        }
 
-          // Seriennummer anzeigen
-          let serialEl = document.getElementById("serial");
-          if (!serialEl) {
-            serialEl = document.createElement("div");
-            serialEl.className = "value";
-            serialEl.id = "serial";
-            card.appendChild(serialEl);
-          }
-          serialEl.innerHTML = `<span class="label">Chip-Seriennummer</span><br>${serial}`;
+        /* Experimental */
+        if (experimentalEnabled() && data.sm_id) {
+          loadSpoolmanWeight(data.sm_id, spoolmanWeightEl);
+        } else if (spoolmanWeightEl) {
+          spoolmanWeightEl.textContent = "—";
+        }
 
-          // Spoolman-Link erzeugen
-          const baseUrl = getCookie("SpoolmanURL");
-          if (baseUrl && data.sm_id && linkEl) {
-            const fullUrl = baseUrl.replace(/\/$/, "") + "/spool/show/" + data.sm_id;
-            linkEl.innerHTML = `<a href="${fullUrl}" target="_blank">${fullUrl}</a>`;
-          } else {
-        linkEl.textContent = "keine URL konfiguriert";
-      }
+        scaninfo.style.display = "none";
+        card.style.display = "block";
+      };
 
-          if (scaninfo) scaninfo.style.display = "none";
-          card.style.display = "block";
-        };
-
-      } catch {
-        alert("Web NFC wird von diesem Browser nicht unterstützt.");
-      }
-    });
-  }
+    } catch {
+      alert("Web NFC wird von diesem Browser nicht unterstützt");
+    }
+  });
 });
 
-// Hilfsfunktionen
-function setCookie(name, value, days) {
-  const d = new Date();
-  d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-  document.cookie = name + "=" + encodeURIComponent(value) +
-    ";expires=" + d.toUTCString() + ";path=/";
+/* =========================
+   Helpers DOM
+========================= */
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val(value);
 }
 
-function getCookie(name) {
-  const cookies = document.cookie.split("; ");
-  for (let c of cookies) {
-    const [key, val] = c.split("=");
-    if (key === name) return decodeURIComponent(val);
+/* =========================
+   Spoolman API
+========================= */
+
+async function loadSpoolmanWeight(sm_id, targetEl) {
+  const base = getCookie("SpoolmanURL");
+  if (!base) {
+    targetEl.textContent = "SpoolmanURL fehlt";
+    return;
   }
-  return null;
-}
 
-function val(v) {
-  return (v !== undefined && v !== null && v !== "") ? v : "kein Eintrag gespeichert";
+  try {
+    const res = await fetch(
+      base.replace(/\/$/, "") + "/api/v1/spool/" + sm_id
+    );
+
+    if (!res.ok) throw new Error(res.status);
+
+    const data = await res.json();
+    targetEl.textContent =
+      data.remaining_weight !== undefined
+        ? data.remaining_weight + " g"
+        : "kein Gewicht verfügbar";
+
+  } catch (e) {
+    targetEl.textContent = "Spoolman nicht erreichbar";
+    console.error(e);
+  }
 }
