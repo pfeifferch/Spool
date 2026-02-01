@@ -1,4 +1,4 @@
-const scriptversion = "0.3.17";
+const scriptversion = "0.3.17a";
 const EXPERIMENTAL_KEY = "experimentalEnabled";
 
 /* =========================
