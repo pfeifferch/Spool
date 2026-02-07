@@ -22,8 +22,15 @@
 <body>
 
 <script>const BETA = true;</script>
-<script src="./script.js" ></script>
 
+<div class="settings">
+  <label for="themeSelect">Theme:</label>
+  <select id="themeSelect">
+    <option value="system">System</option>
+    <option value="light">Hell</option>
+    <option value="dark">Dunkel</option>
+  </select>
+</div>
 
 <div class="app">
 
@@ -143,6 +150,7 @@ Desweiteren können Werte vom OpenSpool-Format ausgelesen werden.
    -->
 </div>
 
+<script src="./script.js" ></script>
 <script>
 
 if (BETA) {

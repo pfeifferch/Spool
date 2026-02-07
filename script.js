@@ -1,5 +1,6 @@
-const scriptversion = "0.3.17a";
+const scriptversion = "0.4.3g";
 const EXPERIMENTAL_KEY = "experimentalEnabled";
+const THEME_KEY = "themeMode";
 
 /* =========================
    Helper
@@ -28,38 +29,90 @@ function val(v) {
     : "kein Eintrag gespeichert";
 }
 
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val(value);
+}
+
 function experimentalEnabled() {
   return localStorage.getItem(EXPERIMENTAL_KEY) === "true";
 }
 
 /* =========================
-   Init
+   DOM INIT
 ========================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* Version */
+  /* ---------- Version ---------- */
+
   const el = document.getElementById("versioninfo");
   if (el) el.textContent = "v" + scriptversion;
 
-  /* Elements */
-  const scanBtn   = document.getElementById("scan");
-  const scaninfo  = document.getElementById("scaninfo");
-  const card      = document.getElementById("card");
+/* =========================
+   THEME – stabiler 3-Modus
+========================= */
 
-  const toggle    = document.getElementById("toggleExperimental");
-  const expBlock  = document.getElementById("experimentalBlock");
+const themeSelect = document.getElementById("themeSelect");
+const THEME_KEY = "themeMode";
 
-  const spoolmanWeightEl = document.getElementById("spoolmanWeight");
+const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-  const input   = document.getElementById("spoolmanInput");
-  const saveBtn = document.getElementById("saveUrl");
+function applyTheme(mode) {
 
-  /* Load saved URL */
-  const savedUrl = getCookie("SpoolmanURL");
-  if (savedUrl && input) input.value = savedUrl;
+  // HARTE RESET-LOGIK
+  document.body.classList.remove("dark");
 
-  /* Toggle init */
+  switch (mode) {
+
+    case "dark":
+      document.body.classList.add("dark");
+      break;
+
+    case "system":
+      if (mediaQuery.matches) {
+        document.body.classList.add("dark");
+      }
+      break;
+
+    case "light":
+    default:
+      // bleibt hell
+      break;
+  }
+}
+
+// Initial laden
+const savedTheme = localStorage.getItem(THEME_KEY) || "system";
+applyTheme(savedTheme);
+
+if (themeSelect) {
+  themeSelect.value = savedTheme;
+
+  themeSelect.addEventListener("change", () => {
+    const mode = themeSelect.value;
+
+    localStorage.setItem(THEME_KEY, mode);
+
+    applyTheme(mode);
+  });
+}
+
+// Systemwechsel nur beachten wenn Systemmodus aktiv
+mediaQuery.addEventListener("change", () => {
+  const current = localStorage.getItem(THEME_KEY) || "system";
+
+  if (current === "system") {
+    applyTheme("system");
+  }
+});
+  /* =========================
+     Experimental Toggle
+  ========================= */
+
+  const toggle = document.getElementById("toggleExperimental");
+  const expBlock = document.getElementById("experimentalBlock");
+
   if (toggle && expBlock) {
     const enabled = experimentalEnabled();
     toggle.checked = enabled;
@@ -69,17 +122,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const state = toggle.checked;
       localStorage.setItem(EXPERIMENTAL_KEY, state);
       expBlock.style.display = state ? "block" : "none";
-
-      if (state) {
-        const smid = document.getElementById("smid")?.textContent;
-        if (smid && smid !== "kein Eintrag gespeichert") {
-          loadSpoolmanWeight(smid, spoolmanWeightEl);
-        }
-      }
     });
   }
 
-  /* Save URL */
+  /* =========================
+     Spoolman URL Save
+  ========================= */
+
+  const input = document.getElementById("spoolmanInput");
+  const saveBtn = document.getElementById("saveUrl");
+
+  const savedUrl = getCookie("SpoolmanURL");
+  if (savedUrl && input) input.value = savedUrl;
+
   if (saveBtn) {
     saveBtn.onclick = () => {
       if (!input.value.trim()) {
@@ -91,9 +146,19 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  /* NFC Scan */
+  /* =========================
+     NFC Scan
+  ========================= */
+
+  const scanBtn = document.getElementById("scan");
+  const scaninfo = document.getElementById("scaninfo");
+  const card = document.getElementById("card");
+  const spoolmanWeightEl = document.getElementById("spoolmanWeight");
+
+  if (!scanBtn) return;
 
   scanBtn.addEventListener("click", async () => {
+
     try {
       const ndef = new NDEFReader();
       await ndef.scan();
@@ -105,24 +170,24 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const record = event.message.records[0];
         let data;
 
         try {
+          const record = event.message.records[0];
           data = JSON.parse(new TextDecoder().decode(record.data));
         } catch {
           alert("Kein gültiges JSON auf dem NFC-Tag");
           return;
         }
 
-        /* Base fields */
         setText("brand", data.brand);
         setText("type", data.type);
         setText("protocol", data.protocol);
         setText("version", data.version);
         setText("smid", data.sm_id);
 
-        setText("temp",
+        setText(
+          "temp",
           data.min_temp && data.max_temp
             ? `${data.min_temp}–${data.max_temp} °C`
             : null
@@ -134,15 +199,14 @@ document.addEventListener("DOMContentLoaded", () => {
             data.color_hex ? "#" + data.color_hex : "#ccc";
         }
 
-        /* Spoolman Link */
         const base = getCookie("SpoolmanURL");
         const link = document.getElementById("spoolmanLink");
+
         if (base && data.sm_id && link) {
           link.innerHTML =
             `<a href="${base.replace(/\/$/, "")}/spool/show/${data.sm_id}" target="_blank">öffnen</a>`;
         }
 
-        /* Experimental */
         if (experimentalEnabled() && data.sm_id) {
           loadSpoolmanWeight(data.sm_id, spoolmanWeightEl);
         } else if (spoolmanWeightEl) {
@@ -156,24 +220,19 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {
       alert("Web NFC wird von diesem Browser nicht unterstützt");
     }
+
   });
+
 });
-
-/* =========================
-   Helpers DOM
-========================= */
-
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val(value);
-}
 
 /* =========================
    Spoolman API
 ========================= */
 
 async function loadSpoolmanWeight(sm_id, targetEl) {
+
   const base = getCookie("SpoolmanURL");
+
   if (!base) {
     targetEl.textContent = "SpoolmanURL fehlt";
     return;
@@ -187,6 +246,7 @@ async function loadSpoolmanWeight(sm_id, targetEl) {
     if (!res.ok) throw new Error(res.status);
 
     const data = await res.json();
+
     targetEl.textContent =
       data.remaining_weight !== undefined
         ? data.remaining_weight + " g"
@@ -196,4 +256,5 @@ async function loadSpoolmanWeight(sm_id, targetEl) {
     targetEl.textContent = "Spoolman nicht erreichbar";
     console.error(e);
   }
+
 }
