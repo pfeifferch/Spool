@@ -1,4 +1,4 @@
-const scriptversion = "0.4.3g";
+const scriptversion = "0.5.2";
 const EXPERIMENTAL_KEY = "experimentalEnabled";
 const THEME_KEY = "themeMode";
 
@@ -184,8 +184,44 @@ mediaQuery.addEventListener("change", () => {
         setText("type", data.type);
         setText("protocol", data.protocol);
         setText("version", data.version);
-        setText("smid", data.sm_id);
+        //setText("smid", data.sm_id);
+/* Spool-ID / Lagerort */
 
+if (data.sm_id === "0") {
+
+  // Locations-Tag erkannt
+  setText("location", data.location);
+  setText("smid", null);
+
+  const link = document.getElementById("spoolmanLink");
+  if (link) link.textContent = "—";
+
+  const spoolWeight = document.getElementById("spoolmanWeight");
+  if (spoolWeight) spoolWeight.textContent = "—";
+
+} else {
+
+  // Kein Locations-Tag
+  setText("location", "kein Locations - Tag erkannt");
+
+  setText("smid", data.sm_id);
+
+  const base = getCookie("SpoolmanURL");
+  const link = document.getElementById("spoolmanLink");
+
+  if (base && data.sm_id && link) {
+    link.innerHTML =
+      `<a href="${base.replace(/\/$/, "")}/spool/show/${data.sm_id}" target="_blank">öffnen</a>`;
+  }
+
+  if (experimentalEnabled()) {
+    loadSpoolmanWeight(
+      data.sm_id,
+      document.getElementById("spoolmanWeight")
+    );
+  }
+}
+// LO logik Ende
         setText(
           "temp",
           data.min_temp && data.max_temp
