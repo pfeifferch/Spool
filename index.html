@@ -153,13 +153,20 @@ Desweiteren können Werte vom OpenSpool-Format ausgelesen werden.
    -->
 </div>
 
-<script src="./script.js" ></script>
+<!-- script src="./script.js" ></script -->
 <script>
 
 if (BETA) {
 document.getElementById("timestamp").innerHTML = '<i class="fa-solid fa-vial-circle-check"></i>';  
+
+  const script = document.createElement("script");
+  script.src = "./script.js";
+  document.head.appendChild(script);
 } else {
 document.getElementById("timestamp").innerHTML = '<i class="fa-solid fa-square-check"></i>'; 
+  const script = document.createElement("script");
+  script.src = "./script.js?v=" + Date.now();
+  document.head.appendChild(script);
 }
 </script>
 
