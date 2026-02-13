@@ -1,4 +1,4 @@
-const scriptversion = "0.5.2";
+const scriptversion = "0.5.3a";
 const EXPERIMENTAL_KEY = "experimentalEnabled";
 const THEME_KEY = "themeMode";
 
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================= */
 
 const themeSelect = document.getElementById("themeSelect");
-const THEME_KEY = "themeMode";
+//const THEME_KEY = "themeMode";
 
 const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -160,7 +160,13 @@ mediaQuery.addEventListener("change", () => {
   scanBtn.addEventListener("click", async () => {
 
     try {
-      const ndef = new NDEFReader();
+      if (!("NDEFReader" in window)) {
+  alert("Web NFC wird nicht unterstützt");
+  return;
+}
+
+const ndef = new NDEFReader();
+//const ndef = new NDEFReader();
       await ndef.scan();
 
       ndef.onreading = event => {
